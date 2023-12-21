@@ -62,6 +62,6 @@ int main(int argc, char* argv[]) {
 
   std::unordered_map<gopt::image_t, Eigen::Vector3d> global_positions;
   view_graph.TranslationAveraging(options, &global_positions);
-
+  LOG(INFO) << "saved data to: " << g2o_filename_out;
   view_graph.WriteG2OFile(g2o_filename_out);
 }
