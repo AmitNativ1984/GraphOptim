@@ -68,7 +68,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert ARKit poses to g2o format')
     parser.add_argument('--arposes', type=str, required=True, help='Path to ARKit data folder')
     parser.add_argument('--pairs', type=str, required=True, help='Path to pairs.txt file')
-    parser.add_argument('--gto', type=str, required=True, help='Path to output g2o file')
+    parser.add_argument('--g2o', type=str, required=True, help='Path to output g2o file')
     args = parser.parse_args()
 
     arposes_filename = args.arposes
