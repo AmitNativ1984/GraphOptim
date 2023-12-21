@@ -52,18 +52,29 @@ int main(int argc, char* argv[]) {
   }
 
   std::string g2o_filename = FLAGS_g2o_filename;
+  std::string g2o_filename_out = g2o_filename + ".out";
+
   gopt::graph::ViewGraph view_graph;
   view_graph.ReadG2OFile(g2o_filename);
+
+  // gopt::RotationEstimatorOptions options;
+  // options.sdp_solver_options.verbose = true;
   
-  gopt::RotationEstimatorOptions options;
-  options.sdp_solver_options.verbose = true;
-  // Set to 1e-6 for se-sync datasets.
-  options.sdp_solver_options.tolerance = 1e-8;
-  options.sdp_solver_options.max_iterations = 100;
-  options.sdp_solver_options.riemannian_staircase_options.
-      min_eigenvalue_nonnegativity_tolerance = 1e-2;
-  options.Setup();
+  // // Set to 1e-6 for se-sync datasets.
+  // options.sdp_solver_options.tolerance = 1e-8;
+  // options.sdp_solver_options.max_iterations = 100;
+  // options.sdp_solver_options.riemannian_staircase_options.
+  //     min_eigenvalue_nonnegativity_tolerance = 1e-2;
+  // options.Setup();
   
-  std::unordered_map<gopt::image_t, Eigen::Vector3d> global_rotations;
-  view_graph.RotationAveraging(options, &global_rotations);
+  // std::unordered_map<gopt::image_t, Eigen::Vector3d> global_rotations;
+  // view_graph.RotationAveraging(options, &global_rotations);
+
+  gopt::PositionEstimatorOptions options_r;
+  options_r.verbose = true;
+
+  std::unordered_map<gopt::image_t, Eigen::Vector3d> global_positions;
+  view_graph.TranslationAveraging(options_r, &global_positions);
+  LOG(INFO) << "saved data to: " << g2o_filename_out;
+  view_graph.WriteG2OFile(g2o_filename_out);
 }

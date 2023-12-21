@@ -52,6 +52,8 @@ int main(int argc, char* argv[]) {
   }
 
   std::string g2o_filename = FLAGS_g2o_filename;
+  std::string g2o_filename_out = g2o_filename + ".out";
+
   gopt::graph::ViewGraph view_graph;
   view_graph.ReadG2OFile(g2o_filename);
   
@@ -60,4 +62,6 @@ int main(int argc, char* argv[]) {
 
   std::unordered_map<gopt::image_t, Eigen::Vector3d> global_positions;
   view_graph.TranslationAveraging(options, &global_positions);
+
+  view_graph.WriteG2OFile(g2o_filename_out);
 }
