@@ -14,10 +14,6 @@ if __name__ == "__main__":
     pairs_filename = args.pairs
     gto_filename = args.g2o
 
-    # step 0: convert ARkit poses to ply
-    arposes_ply_filename = os.path.splitext(gto_filename)[0] + '.ply'
-    convert_ARposes_to_ply(arposes_filename)
-
     # step 1: convert ARkit poses to g2o format   
     poses, edges = arkittog2o(arposes_filename)
     
