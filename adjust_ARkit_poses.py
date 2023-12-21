@@ -28,7 +28,7 @@ if __name__ == "__main__":
     write_g2o(gto_filename, poses[['X', 'Y', 'Z', 'QX', 'QY', 'QZ', 'QW']].values, edges)
 
     #step 4: run graph translation optimization
-    pGraphOptim = subprocess.Popen(['bin/rotation_estimator', "--g2o_filename={}".format(gto_filename)])
+    pGraphOptim = subprocess.Popen(['bin/position_estimator', "--g2o_filename={}".format(gto_filename)])
     pGraphOptim.wait()
 
     #step 5: convert g2o back to ARkit poses
