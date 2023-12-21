@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     #step 5: convert g2o back to ARkit poses
     gto_output_filename = gto_filename + '.out'
-    output_arposes_filename = os.path.splitext(gto_filename)[0] + '.adj' + '.ply'
+    output_arposes_filename = os.path.splitext(gto_filename)[0] + '.adj' + '.txt'
     convert_g2o_to_arposes(gto_output_filename, output_arposes_filename)
 
     #step 6: convert ARkit poses to ply
