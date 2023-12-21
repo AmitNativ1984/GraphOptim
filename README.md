@@ -6,13 +6,46 @@ Graph Optimizer
 
 This repo contains the official implementation of our CVPR 2021 paper - [Hybrid Rotation Averaging: A Fast and Robust Rotation Averaging Approach](https://arxiv.org/pdf/2101.09116.pdf). This library contains not only rotation averaging solvers, but also some popular methods in 3D vision, such as translation averaging, clustering, etc. The library is designed to deal with large scale optimization problems, and is easy to extend. Feel free to contribute to this project.
 
-## 1. Features
+### Features
 
 * A library which solves the optimization problems in 3D vision.
 * A template-based graph module which is easy to extend and to manipulate graph structures.
 * Rotation averaging solvers achieves state-of-the-art.
 * Translation averaging solvers (LUD, LiGT, BATA).
 * Global SfM pipeline
+
+## 1. Correcting Drift from ARkit
+### Step 1: Generate point pairs from point cloud
+1. Convert `ARposes.txt` to `*.ply` file:
+   ```sh
+   python3 arposes2ply.py \
+     --arposes /DATA/ARposes.txt \
+   ```
+2. Open the `*.ply` file in Meshlab, and select point pairs from the point cloud. Save the selected point pairs as `*.txt` file.
+   
+### Step 2: Correct the drift from ARkit
+
+1. Correct the drift from ARkit by running the following python script `adust_ARkit_poses.py`:
+
+    ```sh
+    python3 adust_ARkit_poses.py \
+      --arposes /DATA/ARposes.txt \
+      --pairs /DATA/pairs.txt \
+      --g2o /DATA/ARposes.g2o
+    ```
+
+    #### Inputs:
+    Argument | Description |
+    | --- | --- |
+    | `--arposes` | Path to the ARkit poses *.txt file |
+    | `--pairs` | Path to point pairs *.txt selected from point cloud |
+
+    #### outputs:
+    1. `ARposes.g2o.out`: the optimized poses in *.g2o format
+    2. `ARposes.adj.txt`: the adjusted ARposes in *.txt format
+    3. `ARposes.adj.ply`: the adjusted ARposes in *.ply format
+    
+ 
 
 ## 2. Compilation
 
