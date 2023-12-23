@@ -3,6 +3,7 @@
 	"name": "${localWorkspaceFolderBasename}",
 	"dockerFile": "../Dockerfile",
 	"build": {
+		"target": "dev"
 		},
 	"privileged": true,
 	"runArgs": [

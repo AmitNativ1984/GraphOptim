@@ -1,5 +1,5 @@
 # Use Ubuntu 22.04 (will be supported until April 2027)
-FROM ubuntu:jammy
+FROM ubuntu:jammy as dev
 
 RUN DEBIAN_FRONTEND=noninteractive 
 
@@ -63,3 +63,17 @@ RUN pip3 install \
     opencv-python \
     moviepy
    
+
+###################
+### BUILD STAGE ###
+###################
+FROM dev as release
+
+COPY . /app
+WORKDIR /app
+RUN mkdir build && cd build && cmake .. && make -j8
+
+CMD ["/bin/bash"]
+
+
+
