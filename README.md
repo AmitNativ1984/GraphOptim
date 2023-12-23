@@ -21,17 +21,23 @@ This repo contains the official implementation of our CVPR 2021 paper - [Hybrid 
    python3 arposes2ply.py \
      --arposes /DATA/ARposes.txt \
    ```
-2. Open the `*.ply` file in Meshlab, and select point pairs from the point cloud. Save the selected point pairs as `*.txt` file.
+2. Open the `*.ply` file in Meshlab, and select point pairs from the point cloud. Save the selected point pairs as `*.txt` file. Here is an example for `pairs.txt`:
+   ```txt
+    1189,34584
+    33266,2410
+    31233,3865
+    4846,30424
+    5950,26620
+    7328,27699
+   ```
    
 ### Step 2: Correct the drift from ARkit
-
 1. Correct the drift from ARkit by running the following python script `adust_ARkit_poses.py`:
 
     ```sh
     python3 adust_ARkit_poses.py \
       --arposes /DATA/ARposes.txt \
       --pairs /DATA/pairs.txt \
-      --g2o /DATA/ARposes.g2o
     ```
 
     #### Inputs:
@@ -46,12 +52,39 @@ This repo contains the official implementation of our CVPR 2021 paper - [Hybrid 
     3. `ARposes.adj.ply`: the adjusted ARposes in *.ply format
     
  
+## 2. Running with Docker
+1. Build the docker image:
+   ```sh
+   docker build -t graphoptim -f Dockerfile .
+   ```
 
-## 2. Compilation
+2. Convert `ARposes.txt` to `*.ply` file:
+   ```sh
+   docker run -it --rm -v ${PATH_TO_DATA_FOLDER_ON_HOST}:/DATA  graphoptim \
+    python3 arposes2ply.py --arposes /DATA/ARposes.txt
+   ```
+
+3. Open the `*.ply` file in Meshlab, and select point pairs from the point cloud. Save the selected point pairs as `*.txt` file. Save them in the same folder as `ARposes.txt`. Here is an example for `pairs.txt`:
+   ```txt
+    1189,34584
+    33266,2410
+    31233,3865
+    4846,30424
+    5950,26620
+    7328,27699
+   ```
+
+4. Correct ARkit drift running the following command:
+   ```sh
+   docker run -it --rm -v ${PATH_TO_DATA_FOLDER_ON_HOST}:/DATA  graphoptim \
+    python3 adjust_ARkit_poses.py --arposes /DATA/ARposes.txt --pairs /DATA/pairs.txt
+   ```
+
+## 3. Compilation
 
 The library is compiled and tested on Ubuntu 16.04/18.04/20.04. We would like to support more platforms in the future.
 
-### 2.1 Basic Requirements
+### 3.1 Basic Requirements
 
 This project requires Eigen 3.2. And Ceres 1.14.0 is currently used for nonlinear optimization. You can install all the dependencies through the `./scripts/dependencies.sh`.
 
@@ -59,7 +92,7 @@ This project requires Eigen 3.2. And Ceres 1.14.0 is currently used for nonlinea
 bash ./scripts/dependencies.sh
 ```
 
-### 2.3 Build GraphOptim
+### 3.3 Build GraphOptim
 
 Follow [build.sh](build.sh) or execute the command below:
 
@@ -72,7 +105,7 @@ make -j8
 sudo make install
 ```
 
-### 2.4 Build GlobalSfM
+### 3.4 Build GlobalSfM
 
 Once we installed GraphOptim, we can use it as an external library. And also, we can try the provided global SfM application. 
 
@@ -127,9 +160,9 @@ cmake ..
 make -j8
 ```
 
-## 3. Running Examples
+## 4. Running Examples
 
-### 3.1 Rotation Averaging
+### 4.1 Rotation Averaging
 
 ```sh
 ./build/bin/rotation_estimator --g2o_filename=./data/synthetic/20_2.g2o
@@ -137,7 +170,7 @@ make -j8
 
 You can also try other `g2o` files.
 
-### 3.2 Translation Averaging
+### 4.2 Translation Averaging
 
 The translation averaging methods are decoupled from another project.
 
@@ -145,7 +178,7 @@ The translation averaging methods are decoupled from another project.
 ./build/bin/position_estimator --g2o_filename=./data/synthetic/20_2.g2o
 ```
 
-### 3.3 Global Structure from Motion
+### 4.3 Global Structure from Motion
 
 COLMAP provides only incremental Structure-from-Motion pipelines. To mitigate this issue, we implement a global SfM pipeline based on [TheiaSfM](https://github.com/sweeneychris/TheiaSfM). The implementation can provide a fair comparison to other methods, since most work uses COLMAP's keypoints and feature matcher while TheiaSfM uses different keypoints extraction and matching method, which is not suitable to do a fair comparison.
 
